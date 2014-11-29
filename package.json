@@ -1,0 +1,19 @@
+{
+  "name": "flownotate",
+  "version": "0.0.1",
+  "description": "",
+  "main": "src/main.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "esprima-fb": "~8001.1001.0-dev-harmony-fb",
+    "falafel": "git+https://github.com/jareware/node-falafel.git"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha test/spec/*"
+  },
+  "author": "Jarno Rantanen <jarno@jrw.fi> (http://jrw.fi/)",
+  "license": "MIT"
+}
