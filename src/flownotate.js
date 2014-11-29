@@ -13,11 +13,11 @@ function jsToAst(jsSource, opts) {
 }
 
 function commentToFlowType(flownotateString) { // => flowTypeString
-    return flownotateString.replace(/\s*\/\*\s*([a-z]+)\s*\*\/\s*/, ' : $1');
+    return flownotateString.replace(/\s*\/\*\s*([a-z]+)\s*\*\/\s*/, ': $1');
 }
 
 function jsToJsx(jsSource) {
-    return falafel(jsSource, { parse: jsToAst }, function(node) {
+    return '' + falafel(jsSource, { parse: jsToAst }, function(node) {
         if (node.type === 'FunctionDeclaration') {
             node.params.forEach(function(paramNode) {
                 if (paramNode.trailingComments && paramNode.trailingComments.length === 1) {
@@ -25,6 +25,9 @@ function jsToJsx(jsSource) {
                     paramNode.trailingComments[0].update('');
                 }
             });
+            if (node.body.type === 'BlockStatement' && node.body.leadingComments && node.body.leadingComments.length) {
+                node.body.leadingComments[node.body.leadingComments.length - 1].update(commentToFlowType(node.body.leadingComments[node.body.leadingComments.length - 1].source()));
+            }
         }
     });
 }

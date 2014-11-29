@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "esprima-fb": "~8001.1001.0-dev-harmony-fb",
-    "falafel": "git+https://github.com/jareware/node-falafel.git"
+    "falafel": "git+https://github.com/jareware/node-falafel.git",
+    "mocha": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {
