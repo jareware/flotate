@@ -7,7 +7,7 @@ var wrench = require('wrench');
 var exec = require('child_process').exec;
 
 var TEMP_DIR_NAME = 'flownotate';
-var EXCLUDED_PATHS = /(\.git|node_modules)/;
+var EXCLUDED_PATHS = /(\.git)/;
 var ELIGIBLE_FILE_EXTS = [ '.js', '.jsx' ];
 var TRIGGER_PATTERN = /^\/\* *@flow/;
 var ASSUMED_ENCODING = 'utf8';
@@ -24,21 +24,13 @@ function jsToAst(jsSource, opts) {
 }
 
 function commentToFlowType(flownotateString) { // => flowTypeString
-    return flownotateString.replace(/\s*\/\*\s*([\w]+)\s*\*\/\s*/, ': $1');
+    return flownotateString.replace(/\/\*:\s*(.+?)\s*\*\//, ': $1');
 }
 
 function jsToJsx(jsSource) {
     return '' + falafel(jsSource, { parse: jsToAst }, function(node) {
-        if (node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression') {
-            node.params.forEach(function(paramNode) {
-                if (paramNode.trailingComments && paramNode.trailingComments.length === 1) {
-                    paramNode.update(paramNode.source() + commentToFlowType(paramNode.trailingComments[0].source()));
-                    paramNode.trailingComments[0].update('');
-                }
-            });
-            if (node.body.type === 'BlockStatement' && node.body.leadingComments && node.body.leadingComments.length) {
-                node.body.leadingComments[node.body.leadingComments.length - 1].update(commentToFlowType(node.body.leadingComments[node.body.leadingComments.length - 1].source()));
-            }
+        if (node.type === 'Block') {
+            node.update(commentToFlowType(node.source()));
         }
     });
 }
