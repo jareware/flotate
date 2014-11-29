@@ -31,6 +31,13 @@ describe('flownotate', function() {
             assert.equal(expectedOutput, actualOutput);
         });
 
+        it('leaves already-transformed source untouched', function() {
+            var input = getFixture('transform-stability/in.js');
+            var expectedOutput = getFixture('transform-stability/out.jsx');
+            var actualOutput = flownotate.jsToJsx(input);
+            assert.equal(expectedOutput, actualOutput);
+        });
+
     });
 
 });
