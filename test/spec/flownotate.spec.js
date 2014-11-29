@@ -38,6 +38,13 @@ describe('flownotate', function() {
             actualOutput.should.equal(expectedOutput);
         });
 
+        it('return-module-object', function() {
+            var input = getFixture('return-module-object.js');
+            var expectedOutput = getFixture('return-module-object.ts');
+            var actualOutput = flownotate.jsToJsx(input);
+            actualOutput.should.equal(expectedOutput);
+        });
+
     });
 
 });
