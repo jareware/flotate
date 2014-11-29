@@ -62,9 +62,14 @@ function flowCheck(sourceDir) {
     process.chdir(tempDir);
     //console.log('Workspace path: ' + tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
-    exec('flow check', function(err, stdout) { // TODO: Retain colors in output..?
-        console.log(translatePathsInOutput(stdout, sourceDir, tempDir));
-        process.exit(err ? 1 : 0); // TODO: Proxy actual exit value instead..?
+    exec('flow check', function(err, stdout, stderr) { // TODO: Retain colors in output..?
+        if (stderr) {
+            console.log(stderr);
+            process.exit(1);
+        } else {
+            console.log(translatePathsInOutput(stdout + '', sourceDir, tempDir));
+            process.exit(err ? 1 : 0); // TODO: Proxy actual exit value instead..?
+        }
     });
 }
 
