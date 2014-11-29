@@ -4,6 +4,7 @@ var esprima = require('esprima-fb');
 var falafel = require('falafel');
 var temp = require('temp');
 var wrench = require('wrench');
+var exec = require('child_process').exec;
 
 var TEMP_DIR_NAME = 'flownotate';
 var EXCLUDED_PATHS = /(\.git|node_modules)/;
@@ -52,17 +53,27 @@ function transformFileInPlace(filePath) {
     if (!TRIGGER_PATTERN.test(fileContent)) {
         return; // non-flow-annotated file // TODO: What about $ flow check --all though..?
     }
-    console.log('Transformed: ' + filePath);
+    //console.log('Transformed: ' + filePath);
     fs.writeFileSync(filePath, jsToJsx(fileContent), { encoding: ASSUMED_ENCODING });
 }
 
-function flowCheck(sourcePath) {
+function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
+    return flowCmdOutput.replace(new RegExp('(?:/private)' + tempDir, 'g'), sourceDir);
+}
+
+function flowCheck(sourceDir) {
+    sourceDir = path.resolve(sourceDir);
+    //console.log('Source path: ' + sourceDir);
     temp.track(); // automatically track and cleanup files at exit
     var tempDir = path.join(temp.mkdirSync(TEMP_DIR_NAME), TEMP_DIR_NAME);
-    wrench.copyDirSyncRecursive(sourcePath, tempDir, { exclude: EXCLUDED_PATHS });
+    wrench.copyDirSyncRecursive(sourceDir, tempDir, { exclude: EXCLUDED_PATHS });
     process.chdir(tempDir);
-    console.log('Operating in: ' + tempDir);
+    //console.log('Workspace path: ' + tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
+    exec('flow check', function(err, stdout) { // TODO: Retain colors in output..?
+        console.log(translatePathsInOutput(stdout, sourceDir, tempDir));
+        process.exit(err ? 1 : 0); // TODO: Proxy actual exit value instead..?
+    });
 }
 
 exports.flowCheck = flowCheck;
