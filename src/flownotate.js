@@ -46,7 +46,7 @@ function transformFileInPlace(filePath) {
     if (!TRIGGER_PATTERN.test(fileContent)) {
         return; // non-flow-annotated file // TODO: What about $ flow check --all though..?
     }
-    //console.log('Transformed: ' + filePath);
+    console.log('Transformed: ' + filePath);
     fs.writeFileSync(filePath, jsToJsx(fileContent), { encoding: ASSUMED_ENCODING });
 }
 
@@ -74,12 +74,12 @@ function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
 
 function flowCheck(sourceDir) {
     sourceDir = path.resolve(sourceDir);
-    //console.log('Source path: ' + sourceDir);
+    console.log('Source dir: ' + sourceDir);
     temp.track(); // automatically track and cleanup files at exit
     var tempDir = path.join(temp.mkdirSync(TEMP_DIR_NAME), TEMP_DIR_NAME);
     wrench.copyDirSyncRecursive(sourceDir, tempDir, { exclude: EXCLUDED_PATHS });
     process.chdir(tempDir);
-    //console.log('Workspace path: ' + tempDir);
+    console.log('Temp dir: ' + tempDir);
     transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
     exec('flow check', function(err, stdout, stderr) { // TODO: Retain colors in output..?
