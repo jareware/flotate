@@ -11,6 +11,7 @@ var EXCLUDED_PATHS = /(\.git)/;
 var ELIGIBLE_FILE_EXTS = [ '.js', '.jsx' ];
 var TRIGGER_PATTERN = /^\/\* *@flow/;
 var ASSUMED_ENCODING = 'utf8';
+var FLOW_CONFIG_FILE = '.flowconfig';
 
 function debug(object) {
     console.log(JSON.stringify(object, undefined, 4));
@@ -50,7 +51,7 @@ function transformFileInPlace(filePath) {
 }
 
 function translateIncludePath(pathToTranslate, sourceDir, tempDir) {
-    if (pathToTranslate.match(/^\.\./)) {
+    if (pathToTranslate.match(/^\.\.\//)) {
         return path.join(tempDir.replace(/\/[^/]+/g, '../'), '../' /* for "/private" */, sourceDir, pathToTranslate);
     } else {
         return pathToTranslate;
@@ -58,6 +59,14 @@ function translateIncludePath(pathToTranslate, sourceDir, tempDir) {
 }
 
 exports.translateIncludePath = translateIncludePath;
+
+function transformFlowConfig(sourceDir, tempDir) {
+    var configContent = fs.readFileSync(path.join(tempDir, FLOW_CONFIG_FILE), ASSUMED_ENCODING);
+    configContent = configContent.split('\n').map(function(line) {
+        return line.match(/^\.\.\//) ? translateIncludePath(line, sourceDir, tempDir) : line;
+    }).join('\n');
+    fs.writeFileSync(path.join(tempDir, FLOW_CONFIG_FILE), configContent, { encoding: ASSUMED_ENCODING });
+}
 
 function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
     return flowCmdOutput.replace(new RegExp('(?:/private)' + tempDir, 'g'), sourceDir);
@@ -71,6 +80,7 @@ function flowCheck(sourceDir) {
     wrench.copyDirSyncRecursive(sourceDir, tempDir, { exclude: EXCLUDED_PATHS });
     process.chdir(tempDir);
     //console.log('Workspace path: ' + tempDir);
+    transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
     exec('flow check', function(err, stdout, stderr) { // TODO: Retain colors in output..?
         if (stderr) {
