@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require(__dirname + '/flownotate').flowCheck(process.argv[2] || '.');
+require(__dirname + '/flotate').flowCheck(process.argv[2] || '.');

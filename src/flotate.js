@@ -6,7 +6,7 @@ var temp = require('temp');
 var wrench = require('wrench');
 var exec = require('child_process').exec;
 
-var TEMP_DIR_NAME = 'flownotate';
+var TEMP_DIR_NAME = 'flotate';
 var EXCLUDED_PATHS = /(\.git)/;
 var ELIGIBLE_FILE_EXTS = [ '.js', '.jsx' ];
 var TRIGGER_PATTERN = /^\/\* *@flow/;
@@ -24,8 +24,8 @@ function jsToAst(jsSource, opts) {
     return esprima.parse(jsSource, opts);
 }
 
-function commentToFlowType(flownotateString) { // => flowTypeString
-    return flownotateString.replace(/\/\*:\s*(.+?)\s*\*\//, ': $1');
+function commentToFlowType(flotateString) { // => flowTypeString
+    return flotateString.replace(/\/\*:\s*(.+?)\s*\*\//, ': $1');
 }
 
 function jsToJsx(jsSource) {
