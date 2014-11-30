@@ -49,6 +49,16 @@ function transformFileInPlace(filePath) {
     fs.writeFileSync(filePath, jsToJsx(fileContent), { encoding: ASSUMED_ENCODING });
 }
 
+function translateIncludePath(pathToTranslate, sourceDir, tempDir) {
+    if (pathToTranslate.match(/^\.\./)) {
+        return path.join(tempDir.replace(/\/[^/]+/g, '../'), '../' /* for "/private" */, sourceDir, pathToTranslate);
+    } else {
+        return pathToTranslate;
+    }
+}
+
+exports.translateIncludePath = translateIncludePath;
+
 function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
     return flowCmdOutput.replace(new RegExp('(?:/private)' + tempDir, 'g'), sourceDir);
 }

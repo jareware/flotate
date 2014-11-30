@@ -8,6 +8,26 @@ function getFixture(name) {
 
 describe('flownotate', function() {
 
+    describe('translateIncludePath()', function() {
+
+        it('won\'t unnecessarily translate non-.. paths', function() {
+            var sourceDir = '/Users/jara/Projects/foo/bar/src';
+            var tempDir = '/var/folders/k0/vy40jfp93d538th2y4hkzt7c0000gp/T/flownotate1141030-33313-s4izbj/flownotate';
+            var expectedPath = 'flow-interfaces/lodash.d.ts';
+            var actualPath = flownotate.translateIncludePath('flow-interfaces/lodash.d.ts', sourceDir, tempDir);
+            actualPath.should.equal(expectedPath);
+        });
+
+        it('translates ..-relative paths correctly', function() {
+            var sourceDir = '/Users/jara/Projects/foo/bar/src';
+            var tempDir = '/var/folders/k0/vy40jfp93d538th2y4hkzt7c0000gp/T/flownotate1141030-33313-s4izbj/flownotate';
+            var expectedPath = '../../../../../../../../Users/jara/Projects/foo/bar/contrib/flow-interfaces/lodash.d.ts';
+            var actualPath = flownotate.translateIncludePath('../contrib/flow-interfaces/lodash.d.ts', sourceDir, tempDir);
+            actualPath.should.equal(expectedPath);
+        });
+
+    });
+
     describe('jsToJsx()', function() {
 
         it('transforms a function\'s return type', function() {
