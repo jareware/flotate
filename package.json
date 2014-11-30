@@ -2,7 +2,8 @@
   "name": "flownotate",
   "version": "0.0.1",
   "description": "",
-  "main": "src/main.js",
+  "main": "src/flownotate.js",
+  "bin": "src/cli.js",
   "directories": {
     "test": "test"
   },
