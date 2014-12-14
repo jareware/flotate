@@ -30,28 +30,28 @@ describe('flotate', function() {
 
     describe('jsToJsx()', function() {
 
-        it('transforms a function\'s return type', function() {
+        it('function-return-type-only', function() {
             var input = getFixture('function-return-type-only.js');
             var expectedOutput = getFixture('function-return-type-only.ts');
             var actualOutput = flotate.jsToJsx(input);
             actualOutput.should.equal(expectedOutput);
         });
 
-        it('transforms a function\'s argument types', function() {
+        it('function-argument-types-only', function() {
             var input = getFixture('function-argument-types-only.js');
             var expectedOutput = getFixture('function-argument-types-only.ts');
             var actualOutput = flotate.jsToJsx(input);
             actualOutput.should.equal(expectedOutput);
         });
 
-        it('transforms a function\'s argument AND return types', function() {
+        it('function-argument-and-return-types', function() {
             var input = getFixture('function-argument-and-return-types.js');
             var expectedOutput = getFixture('function-argument-and-return-types.ts');
             var actualOutput = flotate.jsToJsx(input);
             actualOutput.should.equal(expectedOutput);
         });
 
-        it('leaves already-transformed source untouched', function() {
+        it('transform-stability', function() {
             var input = getFixture('transform-stability.js');
             var expectedOutput = getFixture('transform-stability.ts');
             var actualOutput = flotate.jsToJsx(input);
