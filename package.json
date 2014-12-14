@@ -10,12 +10,13 @@
   "dependencies": {
     "esprima-fb": "~8001.1001.0-dev-harmony-fb",
     "falafel": "git+https://github.com/jareware/node-falafel.git",
-    "mocha": "^2.0.1",
     "wrench": "^1.5.8",
-    "temp": "^0.8.1",
+    "temp": "^0.8.1"
+  },
+  "devDependencies": {
+    "mocha": "^2.0.1",
     "should": "^4.3.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "mocha test/spec/*"
   },
