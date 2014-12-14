@@ -77,6 +77,10 @@ function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
 function flowCheck(sourceDir) {
     sourceDir = path.resolve(sourceDir);
     console.log('Source dir: ' + sourceDir);
+    var flowconfig = path.join(sourceDir, FLOW_CONFIG_FILE);
+    if (!fs.existsSync(flowconfig)) {
+        throw new Error('Expected config file "' + flowconfig + '" does not exist');
+    }
     temp.track(); // automatically track and cleanup files at exit
     var tempDir = path.join(temp.mkdirSync(TEMP_DIR_NAME), TEMP_DIR_NAME);
     wrench.copyDirSyncRecursive(sourceDir, tempDir, { exclude: EXCLUDED_PATHS });
