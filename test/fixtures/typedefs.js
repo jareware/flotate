@@ -1,5 +1,5 @@
 /* @flow */
-/*type FooBar = { id: number } */
+/*:: type FooBar = { id: number } */
 function foo(x /*: FooBar */) /*: boolean */ {
     return x.id * 5 === 5;
 }
