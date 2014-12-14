@@ -65,6 +65,13 @@ describe('flotate', function() {
             actualOutput.should.equal(expectedOutput);
         });
 
+        it('typedefs', function() {
+            var input = getFixture('typedefs.js');
+            var expectedOutput = getFixture('typedefs.ts');
+            var actualOutput = flotate.jsToJsx(input);
+            actualOutput.should.equal(expectedOutput);
+        });
+
     });
 
 });

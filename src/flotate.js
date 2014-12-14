@@ -25,7 +25,9 @@ function jsToAst(jsSource, opts) {
 }
 
 function commentToFlowType(flotateString) { // => flowTypeString
-    return flotateString.replace(/\/\*:\s*(.+?)\s*\*\//, ': $1');
+    return flotateString
+      .replace(/\/\*:\s*(.+?)\s*\*\//, ': $1') // "/*: FooBar */" => ": FooBar"
+      .replace(/\/\*type\s*(.+?)\s*\*\//, 'type $1'); // "/*type BarBaz = number */" => "type BarBaz = number"
 }
 
 function jsToJsx(jsSource) {
