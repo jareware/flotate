@@ -30,7 +30,7 @@ function commentToFlowType(flotateString) { // => flowTypeString
       .replace(/\/\*type\s*(.+?)\s*\*\//, 'type $1'); // "/*type BarBaz = number */" => "type BarBaz = number"
 }
 
-function jsToJsx(jsSource) {
+function jsToFlow(jsSource) {
     return '' + falafel(jsSource, { parse: jsToAst }, function(node) {
         if (node.type === 'Block') {
             node.update(commentToFlowType(node.source()));
@@ -38,7 +38,7 @@ function jsToJsx(jsSource) {
     });
 }
 
-exports.jsToJsx = jsToJsx;
+exports.jsToFlow = jsToFlow;
 
 function transformFileInPlace(filePath) {
     if (ELIGIBLE_FILE_EXTS.indexOf(path.extname(filePath)) === -1) {
@@ -49,7 +49,7 @@ function transformFileInPlace(filePath) {
         return; // non-flow-annotated file // TODO: What about $ flow check --all though..?
     }
     console.log('Transformed: ' + filePath);
-    fs.writeFileSync(filePath, jsToJsx(fileContent), { encoding: ASSUMED_ENCODING });
+    fs.writeFileSync(filePath, jsToFlow(fileContent), { encoding: ASSUMED_ENCODING });
 }
 
 function translateIncludePath(pathToTranslate, sourceDir, tempDir) {
