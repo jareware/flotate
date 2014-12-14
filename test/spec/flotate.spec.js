@@ -79,6 +79,13 @@ describe('flotate', function() {
             actualOutput.should.equal(expectedOutput);
         });
 
+        it('ignores', function() {
+            var input = getFixture('ignores.js');
+            var expectedOutput = getFixture('ignores.ts');
+            var actualOutput = flotate.jsToFlow(input);
+            actualOutput.should.equal(expectedOutput);
+        });
+
     });
 
 });
