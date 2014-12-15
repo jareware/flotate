@@ -86,6 +86,13 @@ describe('flotate', function() {
             actualOutput.should.equal(expectedOutput);
         });
 
+        it('whitespace', function() {
+            var input = getFixture('whitespace.js');
+            var expectedOutput = getFixture('whitespace.ts');
+            var actualOutput = flotate.jsToFlow(input);
+            actualOutput.should.equal(expectedOutput);
+        });
+
     });
 
 });

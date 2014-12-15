@@ -1,5 +1,5 @@
 module.exports = {
-    getMountNode: function() : HTMLElement {
+    getMountNode: function() :  HTMLElement  {
         return document.body;
     }
 };
