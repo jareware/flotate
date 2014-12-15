@@ -13,8 +13,6 @@ var TRIGGER_PATTERN = /^\/\* *@flow/;
 var ASSUMED_ENCODING = 'utf8';
 var FLOW_CONFIG_FILE = '.flowconfig';
 
-// Triggering the first Travis build...
-
 function debug(object) {
     console.log(JSON.stringify(object, undefined, 4));
 }
