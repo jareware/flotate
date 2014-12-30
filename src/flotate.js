@@ -26,10 +26,10 @@ function jsToAst(jsSource, opts) {
 
 function commentToFlowType(flotateString) { // => flowTypeString
     return flotateString
-        .replace(/\/\*:flow-begin-ignore\*\//, '/*')    // /*:flow-begin-ignore*/       => /*
-        .replace(/\/\*:flow-end-ignore\*\//, '*/')      // /*:flow-end-ignore*/         => */
-        .replace(/\/\*::([\s\S]+?)\*\//, '$1')          // /*:: type BarBaz = number */ => type BarBaz = number
-        .replace(/\/\*:([\s\S]+?)\*\//, ': $1');        // /*: FooBar */                => : FooBar
+        .replace(/\/\*flow-ignore-begin\*\//, '/*') // /*flow-ignore-begin*/        => /*
+        .replace(/\/\*flow-ignore-end\*\//, '*/')   // /*flow-ignore-end*/          => */
+        .replace(/\/\*::([\s\S]+?)\*\//, '$1')      // /*:: type BarBaz = number */ => type BarBaz = number
+        .replace(/\/\*:([\s\S]+?)\*\//, ': $1');    // /*: FooBar */                => : FooBar
 }
 
 function jsToFlow(jsSource) {

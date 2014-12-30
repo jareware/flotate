@@ -1,7 +1,7 @@
 /* @flow */
 function foo() {
-    /*:flow-begin-ignore*/
+    /*flow-ignore-begin*/
     this.doingIllegalThings();
-    /*:flow-end-ignore*/
+    /*flow-ignore-end*/
     alert('Yay!');
 }
