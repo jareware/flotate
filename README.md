@@ -26,7 +26,9 @@ function foo(x /*: string */, y /*: number */) /*: string */ {
 foo('Hello', 42);
 ```
 
-It's win-some-lose-some: you lose by having to type a bit more, but win by keeping your code more interoperable.
+It's win-some-lose-some: you lose by having to type a bit more, but win by keeping your code interoperable. Whether that's a good ROI for you will vary. That said, you don't have to bring in Flow in one go: you can add annotations to a few modules here and there, and see how it works out. With `flotate`, you can do that evaluation without big commitments (say, to a non-standard JavaScript syntax).
+
+The CLI tool aims to be a drop-in-compatible subset of the `flow` commands, e.g. `flow check` becomes `flotate check`, but otherwise works the same. Only the `check` command is currently supported, but starting a background server should be added in an upcoming release.
 
 ## Annotations
 
@@ -38,7 +40,90 @@ It's win-some-lose-some: you lose by having to type a bit more, but win by keepi
 
 ## Examples
 
-TODO
+The following demonstrates how to use each annotation type, combined with an [ES6 class](https://github.com/esnext/es6-class) definition.
+
+```javascript
+/* @flow */
+
+/*::
+  type Message = {
+    timestamp: number;
+    payload: string;
+  };
+  type Messages = Array<Message>;
+*/
+
+class MessageStore {
+
+  /*:: _msgs: Messages; */
+
+  constructor() {
+    this._msgs = [];
+  }
+
+  addMessages(newMessages /*: Message | Messages */) {
+    this._msgs = this._msgs.concat(newMessages);
+  }
+
+}
+
+var ms = new MessageStore();
+
+/*flow-ignore-begin*/
+ms.addMessages = function() {
+  console.log('addMessages() called with', arguments);
+  MessageStore.prototype.addMessages.apply(ms, arguments);
+};
+/*flow-ignore-end*/
+
+ms.addMessages({
+  payload: "Hello world!"
+});
+```
+
+Some things worth pointing out:
+
+ * We define an object type `Message` and a type alias `Messages` using the `/*::` annotation. The contents can be spread over several lines.
+ * We define a field type `_msgs` using the `/*::` annotation. The contents can also be single-line, if that looks better.
+ * We define a (union) argument type for `newMessages` using the `/*:` annotation, so the method accepts single objects as well as arrays of the same objects.
+ * We dynamically patch `addMessages()` with some debugging info. This would cause Flow to complain about the addMessages.apply() call, as it loses track of argument types. We decide that "we know what we're doing", and hide that part of the code from Flow using the `/*flow-ignore-begin*/` and `/*flow-ignore-end*/` annotations.
+
+Attempting to type-check this will give us an error:
+
+```
+$ flotate check .
+
+/path/to/demo.js:4:17,7:2: property timestamp
+Property not found in
+  /path/to/demo.js:34:16,36:1: object literal
+
+/path/to/demo.js:34:16,36:1: object literal
+This type is incompatible with
+  /path/to/demo.js:8:18,31: array type
+
+/path/to/demo.js:34:16,36:1: object literal
+This type is incompatible with
+  /private/var/folders/k0/vy40jfp93d538th2y4hkzt7c0000gp/T/flow_jara/flowlib_b553107/lib/core.js:120:28,35: array type
+
+Found 3 errors
+```
+
+We can fix the issue by adding the missing mandatory property:
+
+```javascript
+ms.addMessages({
+  timestamp: Date.now(),
+  payload: "Hello world!"
+});
+```
+
+Now our module type-checks:
+
+```
+$ flotate check .
+
+Found 0 errors
+```
 
 ## How it works
 
