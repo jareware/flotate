@@ -86,9 +86,9 @@ Some things worth pointing out:
  * We define an object type `Message` and a type alias `Messages` using the `/*::` annotation. The contents can be spread over several lines.
  * We define a field type `_msgs` using the `/*::` annotation. The contents can also be single-line, if that looks better.
  * We define a (union) argument type for `newMessages` using the `/*:` annotation, so the method accepts single objects as well as arrays of the same objects.
- * We dynamically patch `addMessages()` with some debugging info. This would cause Flow to complain about the addMessages.apply() call, as it loses track of argument types. We decide that "we know what we're doing", and hide that part of the code from Flow using the `/*flow-ignore-begin*/` and `/*flow-ignore-end*/` annotations.
+ * We dynamically patch `addMessages()` with some debugging info. This would cause Flow to complain about the `addMessages.apply()` call, as it loses track of argument types. We decide that "we know what we're doing", and hide that part of the code from Flow using the `/*flow-ignore-begin*/` and `/*flow-ignore-end*/` annotations.
 
-Attempting to type-check this will give us an error:
+Attempting to type-check this will give us errors:
 
 ```
 $ flotate check .
@@ -123,6 +123,48 @@ Now our module type-checks:
 $ flotate check .
 
 Found 0 errors
+```
+
+For completeness, the following is what the above code is translated to, before being handed off to Flow for analysis:
+
+```typescript
+/* @flow */
+
+
+  type Message = {
+    timestamp: number;
+    payload: string;
+  };
+  type Messages = Array<Message>;
+
+
+class MessageStore {
+
+  _msgs: Messages;
+
+  constructor() {
+    this._msgs = [];
+  }
+
+  addMessages(newMessages : Message | Messages ) {
+    this._msgs = this._msgs.concat(newMessages);
+  }
+
+}
+
+var ms = new MessageStore();
+
+/*
+ms.addMessages = function() {
+  console.log('addMessages() called with', arguments);
+  MessageStore.prototype.addMessages.apply(ms, arguments);
+};
+*/
+
+ms.addMessages({
+  timestamp: Date.now(),
+  payload: "Hello world!"
+});
 ```
 
 ## How it works
