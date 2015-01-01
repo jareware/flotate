@@ -1,6 +1,6 @@
 # flotate
 
-> A portmanteau of **flo**w and anno**tate**, allows using the [Flow](http://flowtype.org/) type checker with standard JavaScript syntax, through inline annotations
+> A portmanteau of **flo**w and anno**tate**, allows using the [Flow](http://flowtype.org/) type checker with standard JavaScript syntax, through inline annotation comments.
 
 [![Build Status](https://travis-ci.org/jareware/flotate.svg?branch=master)](https://travis-ci.org/jareware/flotate)
 
