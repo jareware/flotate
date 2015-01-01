@@ -13,8 +13,10 @@ var TRIGGER_PATTERN = /^\/\* *@flow/;
 var ASSUMED_ENCODING = 'utf8';
 var FLOW_CONFIG_FILE = '.flowconfig';
 
-function debug(object) {
-    console.log(JSON.stringify(object, undefined, 4));
+function debug() {
+    if (process.env.FLOTATE_DEBUG) {
+        console.log.apply(console, ['[DEBUG]'].concat(Array.prototype.slice.call(arguments)));
+    }
 }
 
 function jsToAst(jsSource, opts) {
@@ -50,7 +52,7 @@ function transformFileInPlace(filePath) {
     if (!TRIGGER_PATTERN.test(fileContent)) {
         return; // non-flow-annotated file // TODO: What about $ flow check --all though..?
     }
-    console.log('Transformed: ' + filePath);
+    debug('Transformed: ' + filePath);
     fs.writeFileSync(filePath, jsToFlow(fileContent), { encoding: ASSUMED_ENCODING });
 }
 
@@ -78,7 +80,7 @@ function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
 
 function flowCheck(sourceDir) {
     sourceDir = path.resolve(sourceDir);
-    console.log('Source dir: ' + sourceDir);
+    debug('Source dir: ' + sourceDir);
     var flowconfig = path.join(sourceDir, FLOW_CONFIG_FILE);
     if (!fs.existsSync(flowconfig)) {
         throw new Error('Expected config file "' + flowconfig + '" does not exist');
@@ -87,7 +89,7 @@ function flowCheck(sourceDir) {
     var tempDir = path.join(temp.mkdirSync(TEMP_DIR_NAME), TEMP_DIR_NAME);
     wrench.copyDirSyncRecursive(sourceDir, tempDir, { exclude: EXCLUDED_PATHS });
     process.chdir(tempDir);
-    console.log('Temp dir: ' + tempDir);
+    debug('Temp dir: ' + tempDir);
     transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
     exec('flow check', function(err, stdout, stderr) { // TODO: Retain colors in output..?
