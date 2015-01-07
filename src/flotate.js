@@ -30,13 +30,30 @@ function commentToFlowType(flotateString) { // => flowTypeString
     return flotateString
         .replace(/\/\*flow-ignore-begin\*\//, '/*') // /*flow-ignore-begin*/        => /*
         .replace(/\/\*flow-ignore-end\*\//, '*/')   // /*flow-ignore-end*/          => */
-        .replace(/\/\*::([\s\S]+?)\*\//, '$1')      // /*:: type BarBaz = number */ => type BarBaz = number
-        .replace(/\/\*:([\s\S]+?)\*\//, ': $1');    // /*: FooBar */                => : FooBar
+        .replace(/\/\*::([\s\S]+?)\*\//, '$1');     // /*:: type BarBaz = number */ => type BarBaz = number
+}
+
+function processFunctionNode(node, body) {
+    body = body || node.body;
+
+    var source = node.source();
+    var pos = body.range[0] - node.range[0];
+    var header = source.substr(0, pos);
+    var body = source.substr(pos);
+
+    header = header
+        .replace(/\/\*:([\s\S]+?)\*\//g, ': $1');    // /*: FooBar */ => : FooBar
+
+    node.update(header + body);
 }
 
 function jsToFlow(jsSource) {
     return '' + falafel(jsSource, { parse: jsToAst }, function(node) {
-        if (node.type === 'Block') {
+        if (node.type === 'MethodDefinition') {
+            processFunctionNode(node, node.value.body);
+        } else if (node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression') {
+            processFunctionNode(node);
+        } else if (node.type === 'Block') {
             node.update(commentToFlowType(node.source()));
         }
     });
