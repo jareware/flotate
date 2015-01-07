@@ -91,6 +91,12 @@ function flowCheck(sourceDir) {
     var flow = spawn('flow', ['check', '--strip-root'], {
         stdio: 'inherit' // Retain colors in output
     });
+    flow.on('error', function(error) {
+        console.error((error.errno === 'ENOENT') ?
+            'Please install Flow before using Flotate.\nhttp://flowtype.org/docs/getting-started.html' :
+            (error + ''));
+        process.exit(1);
+    });
     flow.on('exit', process.exit); // Proxy actual exit value from Flow
 }
 
