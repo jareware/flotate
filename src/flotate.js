@@ -41,6 +41,22 @@ function processFunctionNode(node, body) {
     var header = source.substr(0, pos);
     var body = source.substr(pos);
 
+    // First check if there is *fancy* type annotation in the leading comment
+    var leadingComments = (node.id || {}).leadingComments || [];
+    for (var i = 0; i < leadingComments.length; i++) {
+        // /* @: (x: String, y: number): boolean
+        var m = leadingComments[i].source().match(/\/\*\s*@:([\s\S]+?)\*\//);
+
+        if (m) {
+            // replace everything after first brace
+            header = header.replace(/\([\s\S]*$/, m[1]);
+            node.update(header + body);
+            leadingComments[i].update("");
+            return;
+        }
+    }
+
+    // Otherwise replace in-parameter-list annotation
     header = header
         .replace(/\/\*:([\s\S]+?)\*\//g, ': $1');    // /*: FooBar */ => : FooBar
 
