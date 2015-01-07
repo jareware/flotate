@@ -74,10 +74,6 @@ function transformFlowConfig(sourceDir, tempDir) {
     fs.writeFileSync(path.join(tempDir, FLOW_CONFIG_FILE), configContent, { encoding: ASSUMED_ENCODING });
 }
 
-function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
-    return flowCmdOutput.replace(new RegExp('(?:/private)' + tempDir, 'g'), sourceDir);
-}
-
 function flowCheck(sourceDir) {
     sourceDir = path.resolve(sourceDir);
     debug('Source dir: ' + sourceDir);
@@ -92,12 +88,12 @@ function flowCheck(sourceDir) {
     debug('Temp dir: ' + tempDir);
     transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
-    exec('flow check', function(err, stdout, stderr) { // TODO: Retain colors in output..?
+    exec('flow check --strip-root', function(err, stdout, stderr) { // TODO: Retain colors in output..?
         if (stderr) {
             console.log(stderr);
             process.exit(1);
         } else {
-            console.log(translatePathsInOutput(stdout + '', sourceDir, tempDir));
+            console.log(stdout);
             process.exit(err ? 1 : 0); // TODO: Proxy actual exit value instead..?
         }
     });
