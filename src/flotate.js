@@ -4,7 +4,7 @@ var esprima = require('esprima-fb');
 var falafel = require('falafel');
 var temp = require('temp');
 var wrench = require('wrench');
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 
 var TEMP_DIR_NAME = 'flotate';
 var EXCLUDED_PATHS = /(\.git)/;
@@ -88,15 +88,10 @@ function flowCheck(sourceDir) {
     debug('Temp dir: ' + tempDir);
     transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
-    exec('flow check --strip-root', function(err, stdout, stderr) { // TODO: Retain colors in output..?
-        if (stderr) {
-            console.log(stderr);
-            process.exit(1);
-        } else {
-            console.log(stdout);
-            process.exit(err ? 1 : 0); // TODO: Proxy actual exit value instead..?
-        }
+    var flow = spawn('flow', ['check', '--strip-root'], {
+        stdio: 'inherit' // Retain colors in output
     });
+    flow.on('exit', process.exit); // Proxy actual exit value from Flow
 }
 
 exports.flowCheck = flowCheck;
