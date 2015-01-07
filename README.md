@@ -30,6 +30,8 @@ It's win-some-lose-some: you lose by having to type a bit more, but win by keepi
 
 The CLI tool aims to be a drop-in-compatible subset of the `flow` commands, e.g. `flow check` becomes `flotate check`, but otherwise works the same. Only the `check` command is currently supported, but starting a background server should be added in an upcoming release.
 
+There's [a related issue](https://github.com/facebook/flow/issues/3) reported to Flow which was both an inspiration and a good problem statement.
+
 ## Installation
 
 Install through `npm` as per usual:
