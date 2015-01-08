@@ -1,6 +1,6 @@
 /* @flow */
 
-/* @: (x: string, y: number): boolean */
+/* : (x: string, y: number): boolean */
 function foo(x, y) {
     return x.length * y === 5;
 }

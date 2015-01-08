@@ -44,8 +44,10 @@ function processFunctionNode(node, body) {
     // First check if there is *fancy* type annotation in the leading comment
     var leadingComments = (node.id || {}).leadingComments || [];
     for (var i = 0; i < leadingComments.length; i++) {
-        // /* @: (x: String, y: number): boolean
-        var m = leadingComments[i].source().match(/\/\*\s*@:([\s\S]+?)\*\//);
+        // The same `:` prefix!
+        // There is no ambiguity, as intances are in different contexts
+        // /* : (x: String, y: number): boolean
+        var m = leadingComments[i].source().match(/\/\*\s*:([\s\S]+?)\*\//);
 
         if (m) {
             // replace everything after first brace
