@@ -47,6 +47,7 @@ describe('flotate', function() {
         itFixture('ignores');
         itFixture('whitespace');
         itFixture('fancy-annotation');
+        itFixture('include');
 
     });
 

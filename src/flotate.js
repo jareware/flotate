@@ -28,9 +28,10 @@ function jsToAst(jsSource, opts) {
 
 function commentToFlowType(flotateString) { // => flowTypeString
     return flotateString
-        .replace(/\/\*flow-ignore-begin\*\//, '/*') // /*flow-ignore-begin*/        => /*
-        .replace(/\/\*flow-ignore-end\*\//, '*/')   // /*flow-ignore-end*/          => */
-        .replace(/\/\*::([\s\S]+?)\*\//, '$1');     // /*:: type BarBaz = number */ => type BarBaz = number
+        .replace(/\/\*flow-ignore-begin\*\//, '/*')       // /*flow-ignore-begin*/        => /*
+        .replace(/\/\*flow-ignore-end\*\//, '*/')         // /*flow-ignore-end*/          => */
+        .replace(/\/\*::([\s\S]+?)\*\//, '$1')            // /*:: type BarBaz = number */ => type BarBaz = number
+        .replace(/\/\*flow-include([\s\S]+?)\*\//, '$1'); // /*flow-include type BarBaz = number */ => type BarBaz = number
 }
 
 function processFunctionNode(node, body) {
