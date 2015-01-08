@@ -28,10 +28,10 @@ function jsToAst(jsSource, opts) {
 
 function commentToFlowType(flotateString) { // => flowTypeString
     return flotateString
-        .replace(/\/\*flow-ignore-begin\*\//, '/*')       // /*flow-ignore-begin*/        => /*
-        .replace(/\/\*flow-ignore-end\*\//, '*/')         // /*flow-ignore-end*/          => */
-        .replace(/\/\*::([\s\S]+?)\*\//, '$1')            // /*:: type BarBaz = number */ => type BarBaz = number
-        .replace(/\/\*flow-include([\s\S]+?)\*\//, '$1'); // /*flow-include type BarBaz = number */ => type BarBaz = number
+        .replace(/\/\*\s*flow-ignore-begin\*\//, '/*')       // /* flow-ignore-begin*/        => /*
+        .replace(/\/\*\s*flow-ignore-end\*\//, '*/')         // /* flow-ignore-end*/          => */
+        .replace(/\/\*\s*::([\s\S]+?)\*\//, '$1')            // /* :: type BarBaz = number */ => type BarBaz = number
+        .replace(/\/\*\s*flow-include([\s\S]+?)\*\//, '$1'); // /* flow-include type BarBaz = number */ => type BarBaz = number
 }
 
 function processFunctionNode(node, body) {
@@ -61,7 +61,7 @@ function processFunctionNode(node, body) {
 
     // Otherwise replace in-parameter-list annotation
     header = header
-        .replace(/\/\*:([\s\S]+?)\*\//g, ': $1');    // /*: FooBar */ => : FooBar
+        .replace(/\/\*\s*:([\s\S]+?)\*\//g, ': $1');    // /* : FooBar */ => : FooBar
 
     node.update(header + body);
 }

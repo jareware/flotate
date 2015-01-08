@@ -40,14 +40,17 @@ describe('flotate', function() {
 
         itFixture('function-argument-types-only');
         itFixture('function-argument-and-return-types');
+        itFixture('function-argument-and-return-types-ws');
         itFixture('transform-stability');
         itFixture('return-module-object');
         itFixture('typedefs');
         itFixture('classes');
         itFixture('ignores');
+        itFixture('ignores-ws');
         itFixture('whitespace');
         itFixture('fancy-annotation');
         itFixture('include');
+        itFixture('include-ws');
 
     });
 
