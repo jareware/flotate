@@ -28,15 +28,51 @@ function jsToAst(jsSource, opts) {
 
 function commentToFlowType(flotateString) { // => flowTypeString
     return flotateString
-        .replace(/\/\*flow-ignore-begin\*\//, '/*') // /*flow-ignore-begin*/        => /*
-        .replace(/\/\*flow-ignore-end\*\//, '*/')   // /*flow-ignore-end*/          => */
-        .replace(/\/\*::([\s\S]+?)\*\//, '$1')      // /*:: type BarBaz = number */ => type BarBaz = number
-        .replace(/\/\*:([\s\S]+?)\*\//, ': $1');    // /*: FooBar */                => : FooBar
+        .replace(/\/\*\s*flow-ignore-begin\*\//, '/*')       // /* flow-ignore-begin*/        => /*
+        .replace(/\/\*\s*flow-ignore-end\*\//, '*/')         // /* flow-ignore-end*/          => */
+        .replace(/\/\*\s*::([\s\S]+?)\*\//, '$1')            // /* :: type BarBaz = number */ => type BarBaz = number
+        .replace(/\/\*\s*flow-include([\s\S]+?)\*\//, '$1'); // /* flow-include type BarBaz = number */ => type BarBaz = number
+}
+
+function processFunctionNode(node, body) {
+    body = body || node.body;
+
+    var source = node.source();
+    var pos = body.range[0] - node.range[0];
+    var header = source.substr(0, pos);
+    var body = source.substr(pos);
+
+    // First check if there is *fancy* type annotation in the leading comment
+    var leadingComments = (node.id || {}).leadingComments || [];
+    for (var i = 0; i < leadingComments.length; i++) {
+        // The same `:` prefix!
+        // There is no ambiguity, as intances are in different contexts
+        // /* : (x: String, y: number): boolean
+        var m = leadingComments[i].source().match(/\/\*\s*:([\s\S]+?)\*\//);
+
+        if (m) {
+            // replace everything after first brace
+            header = header.replace(/\([\s\S]*$/, m[1]);
+            node.update(header + body);
+            leadingComments[i].update("");
+            return;
+        }
+    }
+
+    // Otherwise replace in-parameter-list annotation
+    header = header
+        .replace(/\/\*\s*:([\s\S]+?)\*\//g, ': $1');    // /* : FooBar */ => : FooBar
+
+    node.update(header + body);
 }
 
 function jsToFlow(jsSource) {
     return '' + falafel(jsSource, { parse: jsToAst }, function(node) {
-        if (node.type === 'Block') {
+        if (node.type === 'MethodDefinition') {
+            processFunctionNode(node, node.value.body);
+        } else if (node.type === 'FunctionDeclaration' || node.type === 'FunctionExpression') {
+            processFunctionNode(node);
+        } else if (node.type === 'Block') {
             node.update(commentToFlowType(node.source()));
         }
     });

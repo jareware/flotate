@@ -29,69 +29,28 @@ describe('flotate', function() {
     });
 
     describe('jsToFlow()', function() {
+        function itFixture(fixture) {
+            it(fixture, function() {
+                var input = getFixture(fixture + ".js");
+                var expectedOutput = getFixture(fixture + '.ts');
+                var actualOutput = flotate.jsToFlow(input);
+                actualOutput.should.equal(expectedOutput);
+            });
+        }
 
-        it('function-return-type-only', function() {
-            var input = getFixture('function-return-type-only.js');
-            var expectedOutput = getFixture('function-return-type-only.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('function-argument-types-only', function() {
-            var input = getFixture('function-argument-types-only.js');
-            var expectedOutput = getFixture('function-argument-types-only.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('function-argument-and-return-types', function() {
-            var input = getFixture('function-argument-and-return-types.js');
-            var expectedOutput = getFixture('function-argument-and-return-types.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('transform-stability', function() {
-            var input = getFixture('transform-stability.js');
-            var expectedOutput = getFixture('transform-stability.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('return-module-object', function() {
-            var input = getFixture('return-module-object.js');
-            var expectedOutput = getFixture('return-module-object.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('typedefs', function() {
-            var input = getFixture('typedefs.js');
-            var expectedOutput = getFixture('typedefs.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('classes', function() {
-            var input = getFixture('classes.js');
-            var expectedOutput = getFixture('classes.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('ignores', function() {
-            var input = getFixture('ignores.js');
-            var expectedOutput = getFixture('ignores.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
-
-        it('whitespace', function() {
-            var input = getFixture('whitespace.js');
-            var expectedOutput = getFixture('whitespace.ts');
-            var actualOutput = flotate.jsToFlow(input);
-            actualOutput.should.equal(expectedOutput);
-        });
+        itFixture('function-argument-types-only');
+        itFixture('function-argument-and-return-types');
+        itFixture('function-argument-and-return-types-ws');
+        itFixture('transform-stability');
+        itFixture('return-module-object');
+        itFixture('typedefs');
+        itFixture('classes');
+        itFixture('ignores');
+        itFixture('ignores-ws');
+        itFixture('whitespace');
+        itFixture('fancy-annotation');
+        itFixture('include');
+        itFixture('include-ws');
 
     });
 
