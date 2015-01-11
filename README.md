@@ -16,7 +16,7 @@ function foo(x: string, y: number): boolean {
 foo('Hello', 42);
 ```
 
-You can add the same type annotations with comments, either inline:
+...you can add the same type annotations with comments, either inline, in the exact positions Flow would have them:
 
 ```javascript
 /* @flow */
@@ -26,7 +26,7 @@ function foo(x /*: string */, y /*: number */) /*: boolean */ {
 foo('Hello', 42);
 ```
 
-...or immediately preceding an annotated function:
+...or immediately preceding an annotated function, to keep annotations and code separate:
 
 ```javascript
 /* @flow */
@@ -55,7 +55,7 @@ $ npm install -g flotate
 
 `flotate` defines 5 annotation types:
 
- * `/*: whatever */` which translates to `: whatever`. This is by far the most common annotation you'll need, as it's the syntax Flow uses for [function arguments, return values](http://flowtype.org/docs/type-annotations.html#_) and [variables](http://flowtype.org/docs/variables.html#_).
+ * `/*: whatever */` which translates to `: whatever`. This is by far the most common annotation you'll need, as it's the syntax Flow uses for [function arguments, return values](http://flowtype.org/docs/type-annotations.html#_) and [variables](http://flowtype.org/docs/variables.html#_). When `/*:` appears *immediately preceding* a function, however, it is treated as the complete signature of that function. See [here](test/fixtures/fancy-annotation.js) for an example.
  * `/*:: something */` which translates to `something`. This makes it possible to include anything you want Flow to see, but isn't standard JavaScript, such as [field types](http://flowtype.org/docs/classes.html#_), [reusable object types](http://flowtype.org/docs/objects.html#_) and [aliases](http://flowtype.org/docs/type-aliases.html#_).
  * `/*flow-include something */`, which is a more verbose but more self-documenting alias for `/*::` above.
  * `/*flow-ignore-begin*/` and `/*flow-ignore-end*/`, which translate to `/*` and `*/`, respectively. Flow is usually pretty smart about type inference etc, but sometimes it's just too much work to get a specific part of your code to type check. You'll most often run into this when doing dynamic property access etc, which may be very idiomatic JavaScript, but where Flow won't (and sometimes can't) predict the resulting types through static analysis alone. These annotations allow you to effectively hide that code from Flow, and take the "I know what I'm doing" escape hatch. Note that many times you can still annotate the surrounding function so that it'll appear fully typed from the outside.
