@@ -113,7 +113,7 @@ function transformFlowConfig(sourceDir, tempDir) {
     fs.writeFileSync(path.join(tempDir, FLOW_CONFIG_FILE), configContent, { encoding: ASSUMED_ENCODING });
 }
 
-function flowCheck(sourceDir) {
+function flowCheck(sourceDir, flowBin) {
     sourceDir = path.resolve(sourceDir);
     debug('Source dir: ' + sourceDir);
     var flowconfig = path.join(sourceDir, FLOW_CONFIG_FILE);
@@ -127,7 +127,7 @@ function flowCheck(sourceDir) {
     debug('Temp dir: ' + tempDir);
     transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
-    var flow = spawn('flow', ['check', '--strip-root'], {
+    var flow = spawn(flowBin || 'flow', ['check', '--strip-root'], {
         stdio: 'inherit' // Retain colors in output
     });
     flow.on('error', function(error) {
