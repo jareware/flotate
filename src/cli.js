@@ -10,4 +10,5 @@ try {
     }
 } catch (e) {
     console.log(e + ''); // print the error
+    process.exit(1);
 }
