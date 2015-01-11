@@ -29,6 +29,7 @@ describe('flotate', function() {
     });
 
     describe('jsToFlow()', function() {
+
         function itFixture(fixture) {
             it(fixture, function() {
                 var input = getFixture(fixture + ".js");
