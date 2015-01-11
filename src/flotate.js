@@ -4,7 +4,7 @@ var esprima = require('esprima-fb');
 var falafel = require('falafel');
 var temp = require('temp');
 var wrench = require('wrench');
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 
 var TEMP_DIR_NAME = 'flotate';
 var EXCLUDED_PATHS = /(\.git)/;
@@ -110,10 +110,6 @@ function transformFlowConfig(sourceDir, tempDir) {
     fs.writeFileSync(path.join(tempDir, FLOW_CONFIG_FILE), configContent, { encoding: ASSUMED_ENCODING });
 }
 
-function translatePathsInOutput(flowCmdOutput, sourceDir, tempDir) {
-    return flowCmdOutput.replace(new RegExp('(?:/private)' + tempDir, 'g'), sourceDir);
-}
-
 function flowCheck(sourceDir) {
     sourceDir = path.resolve(sourceDir);
     debug('Source dir: ' + sourceDir);
@@ -128,15 +124,16 @@ function flowCheck(sourceDir) {
     debug('Temp dir: ' + tempDir);
     transformFlowConfig(sourceDir, tempDir);
     wrench.readdirSyncRecursive('.').forEach(transformFileInPlace);
-    exec('flow check', function(err, stdout, stderr) { // TODO: Retain colors in output..?
-        if (stderr) {
-            console.log(stderr);
-            process.exit(1);
-        } else {
-            console.log(translatePathsInOutput(stdout + '', sourceDir, tempDir));
-            process.exit(err ? 1 : 0); // TODO: Proxy actual exit value instead..?
-        }
+    var flow = spawn('flow', ['check', '--strip-root'], {
+        stdio: 'inherit' // Retain colors in output
     });
+    flow.on('error', function(error) {
+        console.error((error.errno === 'ENOENT') ?
+            'Please install Flow before using Flotate.\nhttp://flowtype.org/docs/getting-started.html' :
+            (error + ''));
+        process.exit(1);
+    });
+    flow.on('exit', process.exit); // Proxy actual exit value from Flow
 }
 
 exports.flowCheck = flowCheck;
