@@ -208,3 +208,7 @@ This tool is fundamentally just a simple pre-processor for Flow, and mostly a co
 This project is a grateful recipient of the [Futurice Open Source sponsorship program](http://futurice.com/blog/sponsoring-free-time-open-source-activities).
 
 You guys rule. :bow:
+
+## License
+
+This projected is licensed under the terms of the MIT license.
