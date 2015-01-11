@@ -81,6 +81,9 @@ function jsToFlow(jsSource) {
 exports.jsToFlow = jsToFlow;
 
 function transformFileInPlace(filePath) {
+    if (fs.statSync(filePath).isDirectory()) {
+        return; // directories can't be transformed
+    }
     if (ELIGIBLE_FILE_EXTS.indexOf(path.extname(filePath)) === -1) {
         return; // uninteresting file type
     }

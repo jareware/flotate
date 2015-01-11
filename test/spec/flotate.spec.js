@@ -55,4 +55,12 @@ describe('flotate', function() {
 
     });
 
+    describe('flowCheck()', function() {
+        it('doesn\'t try to transform directories', function() {
+            (function() {
+                flotate.flowCheck(__dirname + '/../fixtures/flowcheck/');
+            }).should.not.throw();
+        });
+    });
+
 });
