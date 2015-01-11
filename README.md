@@ -10,18 +10,29 @@
 
 ```typescript
 /* @flow */
-function foo(x: string, y: number): string {
-    return x.length * y;
+function foo(x: string, y: number): boolean {
+    return x.length * y === 5;
 }
 foo('Hello', 42);
 ```
 
-You can add the same type annotations with inline comments:
+You can add the same type annotations with comments, either inline:
 
 ```javascript
 /* @flow */
-function foo(x /*: string */, y /*: number */) /*: string */ {
-    return x.length * y;
+function foo(x /*: string */, y /*: number */) /*: boolean */ {
+    return x.length * y === 5;
+}
+foo('Hello', 42);
+```
+
+...or immediately preceding an annotated function:
+
+```javascript
+/* @flow */
+/*: (x: string, y: number): boolean */
+function foo(x, y) {
+    return x.length * y === 5;
 }
 foo('Hello', 42);
 ```
@@ -34,7 +45,7 @@ There's [a related issue](https://github.com/facebook/flow/issues/3) reported to
 
 ## Installation
 
-Install through `npm` as per usual:
+First get [Flow](http://flowtype.org/docs/getting-started.html), then install through `npm` as per usual:
 
 ```
 $ npm install -g flotate
@@ -42,10 +53,11 @@ $ npm install -g flotate
 
 ## Annotations
 
-`flotate` defines 4 annotation types:
+`flotate` defines 5 annotation types:
 
  * `/*: whatever */` which translates to `: whatever`. This is by far the most common annotation you'll need, as it's the syntax Flow uses for [function arguments, return values](http://flowtype.org/docs/type-annotations.html#_) and [variables](http://flowtype.org/docs/variables.html#_).
  * `/*:: something */` which translates to `something`. This makes it possible to include anything you want Flow to see, but isn't standard JavaScript, such as [field types](http://flowtype.org/docs/classes.html#_), [reusable object types](http://flowtype.org/docs/objects.html#_) and [aliases](http://flowtype.org/docs/type-aliases.html#_).
+ * `/*flow-include something */`, which is a more verbose but more self-documenting alias for `/*::` above.
  * `/*flow-ignore-begin*/` and `/*flow-ignore-end*/`, which translate to `/*` and `*/`, respectively. Flow is usually pretty smart about type inference etc, but sometimes it's just too much work to get a specific part of your code to type check. You'll most often run into this when doing dynamic property access etc, which may be very idiomatic JavaScript, but where Flow won't (and sometimes can't) predict the resulting types through static analysis alone. These annotations allow you to effectively hide that code from Flow, and take the "I know what I'm doing" escape hatch. Note that many times you can still annotate the surrounding function so that it'll appear fully typed from the outside.
 
 ## Examples
@@ -188,5 +200,9 @@ This tool is fundamentally just a simple pre-processor for Flow, and mostly a co
  1. Update paths in the temporary copy of the `.flowconfig` file, so they point back to the original workspace. This is only needed for paths which reach outside the workspace (e.g. `../../node_modules`), and reduces the need to copy things around.
  1. Look for all files in the temporary workspace marked with `@flow`, and transform the comment annotations to their Flow counterparts (with [esprima](https://github.com/facebook/esprima) and [falafel](https://github.com/substack/node-falafel)).
  1. Invoke the relevant `flow` check on the temporary workspace.
- 1. Output results, so that all paths to the temporary workspace are transformed back to the original workspace.
+ 1. Output whatever `flow` outputs, and exit with whatever it exits with.
  1. Clean up.
+
+## Acknowledgements
+
+This project is a grateful recipient of the [Futurice Open Source sponsorship program](http://futurice.com/blog/sponsoring-free-time-open-source-activities). You guys rule. :bow:
