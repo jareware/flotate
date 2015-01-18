@@ -1,8 +1,8 @@
 module.exports = {
-    getMountNode: function() :  HTMLElement  {
+    getMountNode: function(x :  boolean ) :  HTMLElement  {
         return document.body;
     },
-    getAnotherNode() :  HTMLElement  {
+    getAnotherNode(x :  boolean ) :  HTMLElement  {
         return document.body;
     }
 };
