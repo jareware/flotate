@@ -203,7 +203,7 @@ $ docker build -t flotate
 ### Running
 
 ```
-$ docker run --rm -it -v $(pwd):/src:ro flotate
+$ docker run --rm -it -v $(pwd):/src:ro flotate check .
 ```
 
 ## How it works
