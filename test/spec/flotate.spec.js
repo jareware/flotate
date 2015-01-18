@@ -56,11 +56,33 @@ describe('flotate', function() {
     });
 
     describe('flowCheck()', function() {
-        it('doesn\'t try to transform directories', function() {
+
+        var origExit;
+        var exitValue;
+
+        beforeEach(function() {
+            origExit = process.exit;
+            exitValue = undefined;
+            process.exit = function(value) {
+                exitValue = value;
+            };
+        });
+
+        afterEach(function() {
+            process.exit = origExit;
+        });
+
+        it('doesn\'t try to transform directories', function(done) {
             (function() {
                 flotate.flowCheck(__dirname + '/../fixtures/flowcheck/', 'true');
             }).should.not.throw();
+            // wait until we see the process exit successfully:
+            setInterval(function() {
+                exitValue.should.equal(0);
+                done();
+            }, 1);
         });
+
     });
 
 });
