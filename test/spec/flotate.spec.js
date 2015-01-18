@@ -78,9 +78,10 @@ describe('flotate', function() {
             }).should.not.throw();
             // wait until we see the process exit successfully:
             var int = setInterval(function() {
-                exitValue.should.equal(0);
-                clearInterval(int);
-                done();
+                if (exitValue === 0) {
+                    clearInterval(int);
+                    done();
+                }
             }, 1);
         });
 
