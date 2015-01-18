@@ -46,7 +46,7 @@ function processFunctionNode(node, body) {
     var leadingComments = (node.id || {}).leadingComments || [];
     for (var i = 0; i < leadingComments.length; i++) {
         // The same `:` prefix!
-        // There is no ambiguity, as intances are in different contexts
+        // There is no ambiguity, as instances are in different contexts
         // /* : (x: String, y: number): boolean
         var m = leadingComments[i].source().match(/\/\*\s*:([\s\S]+?)\*\//);
 
@@ -61,7 +61,14 @@ function processFunctionNode(node, body) {
 
     // Otherwise replace in-parameter-list annotation
     header = header
-        .replace(/\/\*\s*:([\s\S]+?)\*\//g, ': $1');    // /* : FooBar */ => : FooBar
+        .replace(/\/\*\s*:([\s\S]+?)\*\//g, ': $1'); // /* : FooBar */ => : FooBar
+
+    // If this is an "ES6 method" function, its return-type annotation is included as leadingComments
+    if (node.parent.method && node.leadingComments) {
+        node.leadingComments.forEach(function(comNode) {
+            comNode.update(comNode.source().replace(/\/\*\s*:([\s\S]+?)\*\//g, ': $1'));// /* : FooBar */ => : FooBar
+        });
+    }
 
     node.update(header + body);
 }
