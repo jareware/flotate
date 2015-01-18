@@ -190,6 +190,22 @@ ms.addMessages({
 });
 ```
 
+## Dockerfile
+
+You can also run `flotate` without installing anything locally, given you already have [Docker](https://www.docker.com/).
+
+### Building
+
+```
+$ docker build -t flotate
+```
+
+### Running
+
+```
+$ docker run --rm -it -v $(pwd):/src:ro flotate
+```
+
 ## How it works
 
 This tool is fundamentally just a simple pre-processor for Flow, and mostly a combination of excellent existing tools. When type-checking code, the following happens:
