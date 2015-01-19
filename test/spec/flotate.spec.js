@@ -52,6 +52,7 @@ describe('flotate', function() {
         itFixture('fancy-annotation');
         itFixture('include');
         itFixture('include-ws');
+        itFixture('react-jsx-class');
 
     });
 
