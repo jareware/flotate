@@ -9,7 +9,7 @@ var spawn = require('child_process').spawn;
 var TEMP_DIR_NAME = 'flotate';
 var EXCLUDED_PATHS = /(\.git)/;
 var ELIGIBLE_FILE_EXTS = [ '.js', '.jsx' ];
-var TRIGGER_PATTERN = /^\/\* *@flow/;
+var TRIGGER_PATTERN = /^[\r\n\s]*\/\* *@flow/;
 var ASSUMED_ENCODING = 'utf8';
 var FLOW_CONFIG_FILE = '.flowconfig';
 
