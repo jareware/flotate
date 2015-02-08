@@ -42,6 +42,9 @@ describe('flotate', function() {
         itFixture('function-argument-types-only');
         itFixture('function-argument-and-return-types');
         itFixture('function-argument-and-return-types-ws');
+        itFixture('function-expression-var-declaration');
+        itFixture('function-expression-assignment');
+        itFixture('function-expression-method');
         itFixture('transform-stability');
         itFixture('return-module-object');
         itFixture('typedefs');
