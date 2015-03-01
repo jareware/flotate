@@ -4,6 +4,28 @@
 
 [![Build Status](https://travis-ci.org/jareware/flotate.svg?branch=master)](https://travis-ci.org/jareware/flotate)
 
+.
+
+.
+
+.
+
+.
+
+.
+
+**IMPORTANT NOTE:** As of Flow 0.4.0, [the `flotate` syntax has been merged upstream into Flow itself](http://flowtype.org/blog/2015/02/20/Flow-Comments.html), rendering this preprocessor unnecessary. Thanks to everyone who showed interest and support!
+
+.
+
+.
+
+.
+
+.
+
+.
+
 ## Introduction
 
 [Flow](http://flowtype.org/) implements many useful type checks, but also requires you to opt into a custom JavaScript syntax. This in turn makes it hard to use many other useful tools (such as linters, preprocessors, etc) which assume standards compliant JavaScript. So instead of writing:
