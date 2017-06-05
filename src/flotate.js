@@ -9,7 +9,7 @@ var spawn = require('child_process').spawn;
 var TEMP_DIR_NAME = 'flotate';
 var EXCLUDED_PATHS = /(\.git)/;
 var ELIGIBLE_FILE_EXTS = [ '.js', '.jsx' ];
-var TRIGGER_PATTERN = /^\/\* *@flow/;
+var TRIGGER_PATTERN = /^[\r\n\s]*\/\* *@flow/;
 var ASSUMED_ENCODING = 'utf8';
 var FLOW_CONFIG_FILE = '.flowconfig';
 
@@ -44,6 +44,17 @@ function processFunctionNode(node, body) {
 
     // First check if there is *fancy* type annotation in the leading comment
     var leadingComments = (node.id || {}).leadingComments || [];
+    // If there is no leading comment, see whether we are a function expression assignment
+    // or variable declaration, and if so, inherit the leading comment of the lvalue
+    if (leadingComments.length == 0) {
+      if (node.parent) {
+        if (node.parent.type == 'AssignmentExpression') {
+          leadingComments = node.parent.left.leadingComments || [];
+        } else if (node.parent.type == 'VariableDeclarator') {
+          leadingComments = node.parent.id.leadingComments || [];
+        }
+      }
+    }
     for (var i = 0; i < leadingComments.length; i++) {
         // The same `:` prefix!
         // There is no ambiguity, as instances are in different contexts
